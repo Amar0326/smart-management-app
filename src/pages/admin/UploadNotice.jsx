@@ -5,6 +5,7 @@ import { collection, query, orderBy, getDocs, deleteDoc, doc, serverTimestamp, a
 import { db } from '../../services/firebase';
 import toast from 'react-hot-toast';
 import { Upload, FileText, ArrowLeft, Trash2, Eye, X, Calendar } from 'lucide-react';
+import { API } from '../../services/apiService';
 
 const UploadNotice = () => {
   const { currentUser } = useAuth();
@@ -141,7 +142,7 @@ const UploadNotice = () => {
       console.log("Deleting publicId:", deleteModal.notice.publicId);
       
       // Call backend API to delete from Cloudinary
-      const response = await fetch('http://localhost:5000/delete-file', {
+      const response = await fetch(`${API}/delete-file`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
