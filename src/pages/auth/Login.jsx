@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../services/authService';
 import toast from 'react-hot-toast';
 import { Eye, EyeOff, Mail, Lock, MapPin, Users, Shield } from 'lucide-react';
+import AuthHero from '../../components/auth/AuthHero';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -36,56 +37,43 @@ const Login = () => {
   };
 
   return (
-    <div className="village-auth-container">
-      <div className="village-auth-card village-fade-in-up">
-        {/* Left Side - Village Image */}
-        <div className="village-auth-left village-auth-image">
-          <div className="village-auth-overlay"></div>
-          <div className="village-auth-content village-slide-in-left">
-            <div className="mb-8">
-              <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center mb-6 village-float">
-                <MapPin className="h-10 w-10 text-white" />
-              </div>
-              <h1 className="village-auth-title village-slide-in-left">Welcome to Villtech</h1>
-              <p className="village-auth-subtitle village-slide-in-left">Smart Village Portal</p>
-              <p className="text-white/80 text-sm mt-2 village-slide-in-left">Empowering Villages Through Technology</p>
-            </div>
-          </div>
-        </div>
+    <div className="h-screen w-full bg-gradient-to-br from-green-50 to-green-100">
+      <div className="flex flex-col md:flex-row h-full">
+        {/* Hero Image Section - Using AuthHero Component */}
+        <AuthHero />
 
-        {/* Right Side - Login Form */}
-        <div className="village-auth-right">
-          {/* Desktop Layout */}
-          <div className="hidden lg:block w-full max-w-md village-fade-in-up">
-            <div className="village-desktop-form-card">
-              {/* Logo and Title */}
-              <div className="text-center mb-8">
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 village-gradient-icon village-pulse">
-                    <MapPin className="h-8 w-8" />
-                  </div>
+        {/* Login Form Section */}
+        <div className="w-full md:w-1/2 px-6 py-8 md:py-12 md:flex md:items-center md:justify-center">
+          <div className="w-full max-w-md">
+            {/* Logo and Title */}
+            <div className="text-center mb-8">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <MapPin className="h-8 w-8 text-white" />
                 </div>
-                <h1 className="text-3xl font-bold village-primary-text mb-2">Welcome Back</h1>
-                <p className="text-gray-600">
-                  Sign in to access your village portal
-                </p>
               </div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Welcome Back</h1>
+              <p className="text-gray-600">
+                Sign in to access your village portal
+              </p>
+            </div>
 
-              {/* Login Form */}
-              <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* Login Form */}
+            <form className="space-y-6" onSubmit={handleSubmit}>
               {/* Email */}
-              <div className="village-form-group">
-                <label htmlFor="email" className="village-form-label">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="village-input-icon" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <input
                     id="email"
                     name="email"
                     type="email"
+                    autoComplete="email"
                     required
-                    className="village-input village-input-with-icon"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChange}
@@ -94,18 +82,19 @@ const Login = () => {
               </div>
 
               {/* Password */}
-              <div className="village-form-group">
-                <label htmlFor="password" className="village-form-label">
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="village-input-icon" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <input
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
                     required
-                    className="village-input village-input-with-icon pr-12"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleChange}
@@ -128,10 +117,13 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition duration-300"
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
-                  <div className="village-loading village-loading-md mx-auto"></div>
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Signing in...
+                  </div>
                 ) : (
                   'Sign In'
                 )}
@@ -144,7 +136,7 @@ const Login = () => {
                 Don't have an account?{' '}
                 <Link
                   to="/register"
-                  className="village-link"
+                  className="text-green-600 hover:text-green-700 font-medium"
                 >
                   Register here
                 </Link>
@@ -153,8 +145,13 @@ const Login = () => {
 
             {/* Footer */}
             <div className="text-center mt-8">
-              <div className="village-divider">
-                <span>or continue with</span>
+              <div className="relative mb-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">or continue with</span>
+                </div>
               </div>
               <p className="text-xs text-gray-500 mt-4">
                 Empowering Villages Through Technology
@@ -163,102 +160,6 @@ const Login = () => {
                 <span className="text-xs text-gray-400">© 2026 Villtech</span>
                 <span className="text-xs text-gray-400">•</span>
                 <span className="text-xs text-gray-400">Smart Village Initiative</span>
-              </div>
-            </div>
-            </div>
-          </div>
-
-          {/* Mobile Layout */}
-          <div className="lg:hidden village-fade-in-up">
-            <div className="village-mobile-form-card">
-              {/* Logo and Title */}
-              <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h1>
-                <p className="text-gray-600 text-center">
-                  Sign in to your village portal
-                </p>
-              </div>
-
-              {/* Mobile Login Form */}
-              <form className="space-y-8" onSubmit={handleSubmit}>
-                {/* Email */}
-                <div className="village-form-group">
-                  <label htmlFor="email" className="village-form-label">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="village-input-icon" />
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      className="village-mobile-input village-input-with-icon"
-                      placeholder="Enter your email"
-                      value={formData.email}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div className="village-form-group">
-                  <label htmlFor="password" className="village-form-label">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <Lock className="village-input-icon" />
-                    <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
-                      autoComplete="current-password"
-                      required
-                      className="village-mobile-input village-input-with-icon pr-12"
-                      placeholder="Enter your password"
-                      value={formData.password}
-                      onChange={handleChange}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5" />
-                      ) : (
-                        <Eye className="h-5 w-5" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="village-mobile-button"
-                >
-                  {loading ? (
-                    <div className="village-loading village-loading-md mx-auto"></div>
-                  ) : (
-                    'Sign In'
-                  )}
-                </button>
-              </form>
-
-              {/* Register Link */}
-              <div className="text-center mt-6">
-                <p className="text-sm text-gray-600">
-                  Don't have an account?{' '}
-                  <Link
-                    to="/register"
-                    className="village-link"
-                  >
-                    Register here
-                  </Link>
-                </p>
               </div>
             </div>
           </div>
