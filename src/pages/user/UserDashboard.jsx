@@ -23,6 +23,7 @@ import {
   Calendar,
   MessageSquare
 } from "lucide-react";
+import SpeechButton from "../../components/common/SpeechButton";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
@@ -37,41 +38,36 @@ const UserDashboard = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      if (!currentUser?.email) return;
+      if (!currentUser?.uid) return;
 
       try {
         const db = getFirestore();
         
-        // Fetch user's complaints
+        // Fetch user's complaints with userId filter
         const complaintsSnapshot = await getDocs(
-          query(collection(db, "complaints"), where("userEmail", "==", currentUser.email))
+          query(collection(db, "complaints"), where("userId", "==", currentUser.uid))
         );
 
-        // Fetch resolved complaints
-        const resolvedSnapshot = await getDocs(
-          query(
-            collection(db, "complaints"), 
-            where("userEmail", "==", currentUser.email),
-            where("status", "==", "Resolved")
-          )
-        );
+        let total = 0;
+        let resolved = 0;
+        let pending = 0;
 
-        // Fetch pending complaints
-        const pendingSnapshot = await getDocs(
-          query(
-            collection(db, "complaints"), 
-            where("userEmail", "==", currentUser.email),
-            where("status", "==", "Pending")
-          )
-        );
+        // Process each complaint to count by status
+        complaintsSnapshot.forEach((doc) => {
+          const data = doc.data();
+          total++;
 
-        // Fetch notices
+          if (data.status === "resolved") resolved++;
+          if (data.status === "pending") pending++;
+        });
+
+        // Fetch notices (no user filter needed for public notices)
         const noticesSnapshot = await getDocs(collection(db, "notices"));
 
         setStats({
-          complaints: complaintsSnapshot.size,
-          resolved: resolvedSnapshot.size,
-          pending: pendingSnapshot.size,
+          complaints: total,
+          resolved: resolved,
+          pending: pending,
           notices: noticesSnapshot.size
         });
       } catch (error) {
@@ -124,28 +120,52 @@ const UserDashboard = () => {
         <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
           <div className="flex justify-between items-center mb-3">
             <FileText className="text-green-700" size={28} />
-            <span className="text-2xl font-bold text-gray-800">{stats.complaints}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-gray-800">{stats.complaints}</span>
+              <SpeechButton 
+                text={`आपल्या तक्रींची एकूण संख्या ${stats.complaints} आहे`} 
+                className="p-1"
+              />
+            </div>
           </div>
           <p className="text-sm text-gray-500">My Complaints</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
           <div className="flex justify-between items-center mb-3">
             <CheckCircle className="text-green-700" size={28} />
-            <span className="text-2xl font-bold text-gray-800">{stats.resolved}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-gray-800">{stats.resolved}</span>
+              <SpeechButton 
+                text={`${stats.resolved} तक्री सुटल्या आहेत`} 
+                className="p-1"
+              />
+            </div>
           </div>
           <p className="text-sm text-gray-500">Resolved</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
           <div className="flex justify-between items-center mb-3">
             <Clock className="text-green-700" size={28} />
-            <span className="text-2xl font-bold text-gray-800">{stats.pending}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-gray-800">{stats.pending}</span>
+              <SpeechButton 
+                text={`${stats.pending} तक्री प्रलंबित आहेत`} 
+                className="p-1"
+              />
+            </div>
           </div>
           <p className="text-sm text-gray-500">Pending</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
           <div className="flex justify-between items-center mb-3">
             <Bell className="text-green-700" size={28} />
-            <span className="text-2xl font-bold text-gray-800">{stats.notices}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-gray-800">{stats.notices}</span>
+              <SpeechButton 
+                text={`आपल्याल ${stats.notices} सूचना आहेत`} 
+                className="p-1"
+              />
+            </div>
           </div>
           <p className="text-sm text-gray-500">Notices</p>
         </div>
