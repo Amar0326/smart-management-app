@@ -140,6 +140,7 @@ const UploadNotice = () => {
     setDeletingNotice(deleteModal.notice.id);
     try {
       console.log("Deleting publicId:", deleteModal.notice.publicId);
+      console.log("Using API URL:", API);
       
       // Call backend API to delete from Cloudinary
       const response = await fetch(`${API}/delete-file`, {
@@ -155,17 +156,21 @@ const UploadNotice = () => {
 
       const result = await response.json();
 
+      if (!response.ok) {
+        throw new Error(result.message || `HTTP error! status: ${response.status}`);
+      }
+
       if (result.success) {
         // Delete from Firestore only after successful Cloudinary deletion
         await deleteDoc(doc(db, "notices", deleteModal.notice.id));
         toast.success('Notice deleted successfully!');
         fetchNotices();
       } else {
-        toast.error('Failed to delete file from Cloudinary');
+        toast.error(result.message || 'Failed to delete file from Cloudinary');
       }
     } catch (error) {
       console.error('Error deleting notice:', error);
-      toast.error('Failed to delete notice');
+      toast.error(error.message || 'Failed to delete notice');
     } finally {
       setDeletingNotice(null);
       setDeleteModal({ isOpen: false, notice: null });

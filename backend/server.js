@@ -30,43 +30,60 @@ app.post('/delete-file', async (req, res) => {
   try {
     const { publicId, resourceType } = req.body;
 
+    console.log('Delete request received:', { publicId, resourceType });
+
     // Validate required fields
     if (!publicId || !resourceType) {
+      console.log('Missing required fields:', { publicId, resourceType });
       return res.status(400).json({ 
         success: false, 
-        error: 'publicId and resourceType are required' 
+        message: 'publicId and resourceType are required' 
       });
     }
 
     // Validate resourceType
     if (!['raw', 'image'].includes(resourceType)) {
+      console.log('Invalid resourceType:', resourceType);
       return res.status(400).json({ 
         success: false, 
-        error: 'resourceType must be either "raw" or "image"' 
+        message: 'resourceType must be either "raw" or "image"' 
       });
     }
 
-    // Delete file from Cloudinary
+    console.log('Attempting to delete from Cloudinary...');
+    
+    // Delete file from Cloudinary with proper resource type
     const result = await cloudinary.uploader.destroy(publicId, { 
       resource_type: resourceType 
     });
 
+    console.log('Cloudinary deletion result:', result);
+
     // Check if deletion was successful
-    if (result.result === 'ok') {
-      return res.json({ success: true });
+    if (result.result === 'ok' || result.result === 'deleted') {
+      console.log('Successfully deleted file from Cloudinary');
+      return res.json({ 
+        success: true, 
+        message: 'File deleted successfully' 
+      });
     } else {
+      console.log('Cloudinary deletion failed:', result);
       return res.status(500).json({ 
         success: false, 
-        error: 'Failed to delete file from Cloudinary' 
+        message: `Failed to delete file from Cloudinary: ${result.result}` 
       });
     }
 
   } catch (error) {
     console.error("Cloudinary Delete Error:", error);
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Delete failed' 
-    });
+    
+    // Ensure we always send a response
+    if (!res.headersSent) {
+      return res.status(500).json({ 
+        success: false, 
+        message: error.message || 'Delete failed due to server error' 
+      });
+    }
   }
 });
 

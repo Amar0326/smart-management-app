@@ -1,18 +1,16 @@
 import axios from 'axios';
-
-// Base API URL from environment variables
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import API_BASE_URL from '../config/api';
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: API,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 // Export API base URL for manual fetch calls
-export { API };
+export { API_BASE_URL as API };
 
 // Export configured axios instance
 export default api;
