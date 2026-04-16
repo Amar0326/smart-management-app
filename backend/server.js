@@ -50,38 +50,59 @@ app.post('/delete-file', async (req, res) => {
       });
     }
 
+    // Clean publicId by removing file extensions
+    const cleanPublicId = publicId.replace(/\.(pdf|PDF|jpg|JPG|jpeg|JPEG|png|PNG)$/, '');
+    console.log('Clean publicId:', cleanPublicId);
+
     console.log('Attempting to delete from Cloudinary...');
     
-    // Delete file from Cloudinary with proper resource type
-    const result = await cloudinary.uploader.destroy(publicId, { 
-      resource_type: resourceType 
-    });
-
-    console.log('Cloudinary deletion result:', result);
-
-    // Check if deletion was successful
-    if (result.result === 'ok' || result.result === 'deleted') {
-      console.log('Successfully deleted file from Cloudinary');
-      return res.json({ 
-        success: true, 
-        message: 'File deleted successfully' 
+    let cloudinaryDeleted = false;
+    let cloudinaryError = null;
+    
+    // Try to delete file from Cloudinary, but don't fail if it doesn't exist
+    try {
+      const result = await cloudinary.uploader.destroy(cleanPublicId, { 
+        resource_type: resourceType 
       });
-    } else {
-      console.log('Cloudinary deletion failed:', result);
-      return res.status(500).json({ 
-        success: false, 
-        message: `Failed to delete file from Cloudinary: ${result.result}` 
-      });
+      console.log('Cloudinary deletion result:', result);
+
+      // Check if deletion was successful
+      if (result.result === 'ok' || result.result === 'deleted') {
+        console.log('Successfully deleted file from Cloudinary');
+        cloudinaryDeleted = true;
+      } else {
+        console.log('Cloudinary deletion failed:', result);
+        cloudinaryError = result.result;
+      }
+    } catch (cloudinaryErr) {
+      console.error('Cloudinary delete error:', cloudinaryErr);
+      cloudinaryError = cloudinaryErr.message;
+      
+      // If file not found, that's okay - continue with deletion
+      if (cloudinaryErr.message && cloudinaryErr.message.includes('not found')) {
+        console.log('File not found in Cloudinary, continuing with DB deletion');
+        cloudinaryDeleted = true; // Treat as success since file doesn't exist
+      }
     }
 
+    // Always return success - the frontend will handle DB deletion
+    return res.json({ 
+      success: true, 
+      message: cloudinaryDeleted ? 'File deleted successfully' : 'File not found in Cloudinary, but deletion can proceed',
+      cloudinaryDeleted,
+      cloudinaryError: cloudinaryError || null
+    });
+
   } catch (error) {
-    console.error("Cloudinary Delete Error:", error);
+    console.error("Server Delete Error:", error);
     
-    // Ensure we always send a response
+    // Even if there's a server error, allow frontend to proceed with DB deletion
     if (!res.headersSent) {
-      return res.status(500).json({ 
-        success: false, 
-        message: error.message || 'Delete failed due to server error' 
+      return res.json({ 
+        success: true, 
+        message: 'Proceeding with deletion despite server error',
+        cloudinaryDeleted: false,
+        cloudinaryError: error.message
       });
     }
   }

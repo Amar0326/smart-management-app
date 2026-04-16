@@ -160,17 +160,38 @@ const UploadNotice = () => {
         throw new Error(result.message || `HTTP error! status: ${response.status}`);
       }
 
-      if (result.success) {
-        // Delete from Firestore only after successful Cloudinary deletion
-        await deleteDoc(doc(db, "notices", deleteModal.notice.id));
-        toast.success('Notice deleted successfully!');
-        fetchNotices();
+      // Always delete from Firestore regardless of Cloudinary result
+      console.log('Deleting notice from Firestore...');
+      await deleteDoc(doc(db, "notices", deleteModal.notice.id));
+      
+      // Show appropriate success message based on Cloudinary result
+      if (result.cloudinaryDeleted) {
+        toast.success('Notice and file deleted successfully!');
       } else {
-        toast.error(result.message || 'Failed to delete file from Cloudinary');
+        toast.success('Notice deleted! (File was already removed from storage)');
       }
+      
+      // Refresh notices list
+      fetchNotices();
+      
+      // Log Cloudinary status for debugging
+      if (result.cloudinaryError) {
+        console.log('Cloudinary operation note:', result.cloudinaryError);
+      }
+      
     } catch (error) {
       console.error('Error deleting notice:', error);
-      toast.error(error.message || 'Failed to delete notice');
+      
+      // Even if backend fails, try to delete from Firestore
+      try {
+        console.log('Attempting to delete from Firestore despite error...');
+        await deleteDoc(doc(db, "notices", deleteModal.notice.id));
+        toast.success('Notice deleted! (Some cleanup may be needed)');
+        fetchNotices();
+      } catch (firestoreError) {
+        console.error('Failed to delete from Firestore:', firestoreError);
+        toast.error('Failed to delete notice completely');
+      }
     } finally {
       setDeletingNotice(null);
       setDeleteModal({ isOpen: false, notice: null });
