@@ -54,7 +54,7 @@ const Layout = ({ children }) => {
     { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     { name: 'User Poll', href: '/admin/poll', icon: CheckCircle },
     { name: 'Contacts', href: '/admin/contacts', icon: Users },
-    { name: 'Govt Websites', href: '/admin/govt-websites', icon: Globe },
+    { name: 'Government Websites', href: '/admin/govt-websites', icon: Globe },
     { name: 'Community Activities', href: '/admin/community-activities', icon: Heart },
   ];
 
@@ -72,7 +72,7 @@ const Layout = ({ children }) => {
               <MapPin className="h-6 w-6 text-green-700" />
             </div>
             <div>
-              <h1 className="text-lg font-bold">Villtech</h1>
+              <h1 className="text-lg font-bold">VILLTECH</h1>
               <p className="text-sm text-green-200">Smart Village Portal</p>
             </div>
           </div>

@@ -111,7 +111,7 @@ const AdminDashboard = () => {
       href: "/admin/complaints",
     },
     {
-      title: "Upload Notice",
+      title: "Notice Management",
       icon: Upload,
       href: "/admin/upload-notice",
     },
@@ -131,7 +131,7 @@ const AdminDashboard = () => {
       href: "/admin/contacts",
     },
     {
-      title: "Govt Websites",
+      title: "Government Websites",
       icon: Globe,
       href: "/admin/govt-websites",
     },
@@ -178,7 +178,7 @@ const AdminDashboard = () => {
       {/* Hero Banner */}
       <div className="bg-gray-600 text-white py-12 sm:py-16 text-center">
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
-          Village Administration Panel
+          Administration Portal
         </h1>
         <p className="text-sm sm:text-lg opacity-90">
           Manage Complaints, Notices & Activities Efficiently

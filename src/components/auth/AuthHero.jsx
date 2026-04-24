@@ -16,7 +16,7 @@ const AuthHero = () => {
           <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center mx-auto mb-4">
             <MapPin className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Welcome to Villtech</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">Welcome to VILLTECH</h1>
           <p className="text-lg md:text-xl mb-1">Smart Village Portal</p>
           <p className="text-white/80 text-sm md:text-base">Empowering Villages Through Technology</p>
         </div>

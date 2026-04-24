@@ -157,7 +157,7 @@ const Login = () => {
                 Empowering Villages Through Technology
               </p>
               <div className="flex justify-center space-x-4 mt-2">
-                <span className="text-xs text-gray-400">© 2026 Villtech</span>
+                <span className="text-xs text-gray-400">© 2026 VILLTECH</span>
                 <span className="text-xs text-gray-400">•</span>
                 <span className="text-xs text-gray-400">Smart Village Initiative</span>
               </div>

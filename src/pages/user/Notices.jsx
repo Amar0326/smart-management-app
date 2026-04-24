@@ -66,8 +66,8 @@ const Notices = () => {
               <FileText className="h-8 w-8 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Village Notices</h1>
-          <p className="text-lg font-light">Official Announcements & Information</p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">Notices</h1>
+          <p className="text-lg font-light">Government Resolutions and Official Announcements</p>
         </div>
       </div>
 

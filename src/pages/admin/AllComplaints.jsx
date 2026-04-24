@@ -182,7 +182,7 @@ const AllComplaints = () => {
       <div className="px-4 py-6 sm:px-0">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">All Complaints</h1>
-          <p className="mt-2 text-gray-600">Manage and update complaint statuses</p>
+          <p className="mt-2 text-gray-600">Manage and update complaint status</p>
         </div>
 
         {/* Filters */}

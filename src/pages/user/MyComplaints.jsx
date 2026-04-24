@@ -116,7 +116,7 @@ const MyComplaints = () => {
             </div>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2">My Complaints</h1>
-          <p className="text-lg font-light">Track and manage your village complaints</p>
+          <p className="text-lg font-light">Track and manage your complaints</p>
         </div>
       </div>
 
